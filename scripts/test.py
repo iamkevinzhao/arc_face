@@ -7,27 +7,33 @@ from cv_bridge import CvBridge, CvBridgeError
 
 bridge = CvBridge()
 
-sockin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sockin.bind(("127.0.0.1", 2368))
-sockin.listen(1)
-conn, addr = sockin.accept()
+class TCPServer:
+    conn = []
+    def __init__(self):
+        sockin = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sockin.bind(("127.0.0.1", 2368))
+        sockin.listen(1)
+        self.conn, addr = sockin.accept()
+    def __del__(self):
+        self.conn.close()
+    def parse(self):
+        data = self.conn.recv(1024)
+        data = data.decode()
+        suf = data.rfind(']')
+        prf = data.rfind('[')
+        data = data[prf:suf+1]
+        return data
 
-def parse():
-    data = conn.recv(1024)
-    data = data.decode()
-    suf = data.rfind(']')
-    prf = data.rfind('[')
-    data = data[prf:suf+1]
-    print(data)
-    return data
+server = TCPServer()
 
 def callback(data):
     try:
         cv_img = bridge.imgmsg_to_cv2(data, 'bgr8')
     except CvBridgeError as e:
         print(e)
+    msg = server.parse()
+    print(msg)
 
-    info = parse()
 
 
 def listener():
