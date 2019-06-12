@@ -68,14 +68,14 @@ class Recognition:
             h = np.size(frame, 1)
             center = ((bottom + top) / 2, (right + left) / 2)
             margin = 0.25
-            print(center, w * margin, w * (1 - margin))
+            # print(center, w * margin, w * (1 - margin))
             if (center[0] < w * margin) or (center[0] > w * (1 - margin)):
                 continue
             if (center[1] < h * margin) or (center[1] > h * (1 - margin)):
                 continue
             ratio = math.sqrt(pow(top - bottom, 2) + pow(left - right, 2)) / math.sqrt(pow(w, 2) + pow(h, 2))
-            if ratio < 0.20:
-                continue
+            # if ratio < 0.20:
+            #     continue
             if ratio > max_box_ratio:
                 best_name = name
                 max_box_ratio = ratio

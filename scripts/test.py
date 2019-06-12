@@ -38,10 +38,10 @@ def callback(data):
         print(e)
     pose = slam_pose
     (name, dist) = recog.process(cv_img)
-    if name:
+    if name and (name != "Unknown"):
         pose = pose.replace('robot', name)
         pose = pose.replace('dist:0', 'dist:' + str(dist))
-        print(pose)
+        # print(pose)
         tcp.send(pose)
 
 
