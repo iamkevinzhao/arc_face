@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import glob
 import math
+import pickle
 
 class Recognition:
     known_face_encodings = []
@@ -15,12 +16,27 @@ class Recognition:
     face_encodings = []
     face_names = []
     def __init__(self):
-        files = glob.glob('./images/*.jpeg')
-        for file in files:
-            img = face_recognition.load_image_file(file)
-            encoding = face_recognition.face_encodings(img)[0]
-            self.known_face_encodings.append(encoding)
-            self.known_face_names.append(os.path.splitext(os.path.basename(file))[0])
+        load_from_file = True
+
+        if not load_from_file:
+            files = glob.glob('./images/*.jpeg')
+            for file in files:
+                img = face_recognition.load_image_file(file)
+                encoding = face_recognition.face_encodings(img)[0]
+                self.known_face_encodings.append(encoding)
+                self.known_face_names.append(os.path.splitext(os.path.basename(file))[0])
+
+        if not load_from_file:
+            with open('encodings.pkl', 'wb') as f:
+                pickle.dump(self.known_face_encodings, f)
+            with open('names.pkl', 'wb') as f:
+                pickle.dump(self.known_face_names, f)
+        else:
+            with open('encodings.pkl', 'rb') as f:
+                self.known_face_encodings = pickle.load(f)
+            with open('names.pkl', 'rb') as f:
+                self.known_face_names = pickle.load(f)
+
         print(self.known_face_names)
     def process(self, frame):
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
